@@ -13,8 +13,10 @@ from .tsetmc import fetch_symbol_history
 _sync_lock = threading.Lock()
 
 
-def sync_all(trigger: str = "MANUAL") -> dict:
-    """Fetch the latest one-year price/client history for every tracked instrument."""
+def sync_all(trigger: str = "MANUAL", days: int = 365) -> dict:
+    """Fetch recent price/client history for every tracked instrument."""
+    if days < 1:
+        raise ValueError("days must be a positive integer")
     if not _sync_lock.acquire(blocking=False):
         raise RuntimeError("یک همگام‌سازی دیگر در حال اجراست؛ کمی بعد دوباره تلاش کن.")
 
@@ -36,7 +38,7 @@ def sync_all(trigger: str = "MANUAL") -> dict:
             if not ins_code or ins_code.lower() == "nan":
                 continue
             try:
-                incoming = fetch_symbol_history(ins_code, symbol, days=365)
+                incoming = fetch_symbol_history(ins_code, symbol, days=days)
                 book["DailyData"] = upsert_rows(
                     book["DailyData"], incoming, ["InsCode", "Date"]
                 )
