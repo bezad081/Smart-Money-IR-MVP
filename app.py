@@ -18,6 +18,8 @@ from smart_money.storage import (
     merge_uploaded_workbook,
     remove_instrument,
     save_book,
+    load_settings,
+    save_settings,
 )
 from smart_money.sync import sync_all
 from smart_money.tsetmc import search_instruments
@@ -557,11 +559,13 @@ def render_data_settings(book: dict[str, pd.DataFrame]) -> None:
     st.divider()
     st.subheader("به‌روزرسانی خودکار")
     st.write("زمان پیش‌فرض دریافت روزانه پس از پایان بازار، ساعت ۱۸:۳۰ به وقت تهران است.")
-    current_hour = st.number_input("ساعت (تهران)", min_value=0, max_value=23, value=18, step=1)
-    current_minute = st.number_input("دقیقه", min_value=0, max_value=59, value=30, step=5)
+    settings = load_settings()
+    current_hour = st.number_input("ساعت (تهران)", min_value=0, max_value=23, value=int(settings["auto_sync_hour"]), step=1)
+    current_minute = st.number_input("دقیقه", min_value=0, max_value=59, value=int(settings["auto_sync_minute"]), step=5)
     if st.button("ذخیره ساعت به‌روزرسانی"):
+        save_settings({"auto_sync_hour": int(current_hour), "auto_sync_minute": int(current_minute)})
         update_schedule(int(current_hour), int(current_minute))
-        st.success("زمان‌بندی برای اجرای بعدی برنامه به‌روزرسانی شد.")
+        st.success("زمان‌بندی ذخیره شد و برای اجرای بعدی برنامه هم باقی می‌ماند.")
     next_run = next_run_time()
     st.caption("اجرای بعدی: " + (str(next_run) if next_run else "زمان‌بندی فعال نیست"))
 
@@ -580,7 +584,8 @@ def render_data_settings(book: dict[str, pd.DataFrame]) -> None:
 
 def main() -> None:
     try:
-        settings = load_settings()\n        start_scheduler(hour=int(settings["auto_sync_hour"]), minute=int(settings["auto_sync_minute"]))
+        settings = load_settings()
+        start_scheduler(hour=int(settings["auto_sync_hour"]), minute=int(settings["auto_sync_minute"]))
     except Exception as exc:
         st.sidebar.warning(f"زمان‌بندی خودکار فعال نشد: {exc}")
 
@@ -609,13 +614,10 @@ def main() -> None:
             st.rerun()
         except Exception as exc:
             st.sidebar.error(str(exc))
-    st.sidebar.caption("آخرین اجرای ذخیره‌شده: " + (
-        date_text(load_book()["SyncLog"]["FinishedAt"].dropna().max())
-        if not load_book()["SyncLog"].empty and load_book()["SyncLog"]["FinishedAt"].notna().any()
-        else "—"
-    ))
-
     book = get_book()
+    sync_log = book["SyncLog"]
+    last_sync = date_text(sync_log["FinishedAt"].dropna().max()) if not sync_log.empty and sync_log["FinishedAt"].notna().any() else "—"
+    st.sidebar.caption("آخرین اجرای ذخیره‌شده: " + last_sync)
     if page == "نمای کلی":
         render_overview(book)
     elif page == "نمادها و پرتفوی":
