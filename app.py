@@ -362,18 +362,17 @@ def render_scanner(book: dict[str, pd.DataFrame]) -> None:
         return
     grouped = filtered.groupby(["InsCode", "Symbol"], as_index=False).agg({
         "LegalBuyVolume": "sum", "LegalSellVolume": "sum",
+        "RetailBuyVolume": "sum", "RetailSellVolume": "sum",
         "TotalVolume": "sum", "ClientDataAvailable": "sum",
     })
     grouped["NetLegalVolume"] = grouped["LegalBuyVolume"] - grouped["LegalSellVolume"]
-    grouped["NetLegalPctVolume"] = grouped["NetLegalVolume"] / grouped["TotalVolume"].replace(0, pd.NA) * 100
-    buys = grouped["LegalBuyVolume"] + filtered.groupby(["InsCode", "Symbol"])["RetailBuyVolume"].sum().reindex(
-        pd.MultiIndex.from_frame(grouped[["InsCode", "Symbol"]])
-    ).fillna(0).to_numpy()
-    sells = grouped["LegalSellVolume"] + filtered.groupby(["InsCode", "Symbol"])["RetailSellVolume"].sum().reindex(
-        pd.MultiIndex.from_frame(grouped[["InsCode", "Symbol"]])
-    ).fillna(0).to_numpy()
-    grouped["LegalBuySharePct"] = grouped["LegalBuyVolume"] / pd.Series(buys).replace(0, pd.NA) * 100
-    grouped["LegalSellSharePct"] = grouped["LegalSellVolume"] / pd.Series(sells).replace(0, pd.NA) * 100
+    grouped["NetLegalPctVolume"] = (
+        grouped["NetLegalVolume"] / grouped["TotalVolume"].where(grouped["TotalVolume"] > 0) * 100
+    )
+    total_buy = grouped["LegalBuyVolume"] + grouped["RetailBuyVolume"]
+    total_sell = grouped["LegalSellVolume"] + grouped["RetailSellVolume"]
+    grouped["LegalBuySharePct"] = grouped["LegalBuyVolume"].div(total_buy.where(total_buy > 0)) * 100
+    grouped["LegalSellSharePct"] = grouped["LegalSellVolume"].div(total_sell.where(total_sell > 0)) * 100
 
     sort_col = "NetLegalVolume"
     ascending = False
