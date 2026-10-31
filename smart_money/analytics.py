@@ -37,6 +37,15 @@ def enrich_market_data(data: pd.DataFrame) -> pd.DataFrame:
         (frame["ClosePrice"] / frame["PreviousClose"] - 1) * 100,
         np.nan,
     )
+    if "ClientDataAvailable" in frame.columns:
+        def _parse_available(value) -> bool:
+            if pd.isna(value):
+                return False
+            if isinstance(value, (bool, np.bool_)):
+                return bool(value)
+            return str(value).strip().lower() in {"true", "1", "yes", "y"}
+
+        frame["ClientDataAvailable"] = frame["ClientDataAvailable"].map(_parse_available)
     frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce")
     return frame.sort_values(["InsCode", "Date"]).reset_index(drop=True)
 
