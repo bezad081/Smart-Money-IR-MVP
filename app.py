@@ -581,7 +581,7 @@ def render_data_settings(book: dict[str, pd.DataFrame]) -> None:
 
 def main() -> None:
     try:
-        start_scheduler()
+        settings = load_settings()\n        start_scheduler(hour=int(settings["auto_sync_hour"]), minute=int(settings["auto_sync_minute"]))
     except Exception as exc:
         st.sidebar.warning(f"زمان‌بندی خودکار فعال نشد: {exc}")
 
