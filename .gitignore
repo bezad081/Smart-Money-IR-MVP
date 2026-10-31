@@ -1,10 +1,4 @@
-node_modules
-dist
-.env
-*.log
-.DS_Store
-
-# Python local application
+# Python
 .venv/
 venv/
 __pycache__/
@@ -12,7 +6,16 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local data and settings
 data/*.xlsx
 data/*.xls
 data/settings.json
-.streamlit/secrets.toml
+
+# Local OS / editor files
+.DS_Store
+*.log
+.env
