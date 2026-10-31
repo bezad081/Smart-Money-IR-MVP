@@ -217,3 +217,28 @@ def merge_uploaded_workbook(uploaded_bytes: bytes, path: Path | str | None = Non
                 frame[column] = pd.NA
         current[sheet] = upsert_rows(current[sheet], frame[SHEET_COLUMNS[sheet]], keys)
     save_book(current, path)
+
+
+def load_settings(path: Path | str | None = None) -> dict[str, Any]:
+    import json
+
+    settings_path = Path(path) if path else SETTINGS_PATH
+    defaults: dict[str, Any] = {"auto_sync_hour": 18, "auto_sync_minute": 30}
+    if not settings_path.exists():
+        return defaults
+    try:
+        loaded = json.loads(settings_path.read_text(encoding="utf-8"))
+        return {**defaults, **loaded}
+    except (OSError, ValueError, TypeError):
+        return defaults
+
+
+def save_settings(settings: dict[str, Any], path: Path | str | None = None) -> None:
+    import json
+
+    settings_path = Path(path) if path else SETTINGS_PATH
+    settings_path.parent.mkdir(parents=True, exist_ok=True)
+    settings_path.write_text(
+        json.dumps(settings, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
