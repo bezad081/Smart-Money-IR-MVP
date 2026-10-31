@@ -11,6 +11,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 WORKBOOK_PATH = DATA_DIR / "SmartMoneyData.xlsx"
+SETTINGS_PATH = DATA_DIR / "settings.json"
 
 SHEET_COLUMNS: dict[str, list[str]] = {
     "Symbols": ["InsCode", "Symbol", "Name", "Market", "AddedAt"],
