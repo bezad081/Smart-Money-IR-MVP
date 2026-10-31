@@ -14,8 +14,10 @@ def enrich_market_data(data: pd.DataFrame) -> pd.DataFrame:
         return data.copy()
     frame = data.copy()
     numeric = [
-        "ClosePrice", "PreviousClose", "TotalVolume", "LegalBuyVolume",
-        "LegalSellVolume", "RetailBuyVolume", "RetailSellVolume",
+        "ClosePrice", "PreviousClose", "OpenPrice", "HighPrice", "LowPrice",
+        "TotalVolume", "LegalBuyVolume", "LegalSellVolume", "LegalBuyValue",
+        "LegalSellValue", "RetailBuyVolume", "RetailSellVolume",
+        "RetailBuyValue", "RetailSellValue",
     ]
     for col in numeric:
         if col in frame:
