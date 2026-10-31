@@ -1,0 +1,6 @@
+{
+  "name":"@smart-money/api","private":true,"version":"0.1.0","type":"module",
+  "scripts":{"dev":"tsx watch src/server.ts","build":"tsc -p tsconfig.json","start":"node dist/server.js","db:generate":"cd ../.. && prisma generate --schema apps/api/prisma/schema.prisma","db:push":"cd ../.. && prisma db push --schema apps/api/prisma/schema.prisma","db:studio":"cd ../.. && prisma studio --schema apps/api/prisma/schema.prisma"},
+  "dependencies":{"@fastify/cors":"^10.0.2","@prisma/client":"^6.2.1","fastify":"^5.2.1","dotenv":"^16.4.7","node-cron":"^3.0.3","zod":"^3.24.1"},
+  "devDependencies":{"@types/node":"^22.10.5","@types/node-cron":"^3.0.11","prisma":"^6.2.1","tsx":"^4.19.2","typescript":"^5.7.2"}
+}
