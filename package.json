@@ -1,0 +1,13 @@
+{
+  "name":"smart-money-ir-mvp","private":true,"version":"0.1.0",
+  "workspaces":["apps/*"],
+  "scripts":{
+    "dev":"concurrently \"npm run dev -w @smart-money/api\" \"npm run dev -w @smart-money/web\"",
+    "build":"npm run db:generate -w @smart-money/api && npm run build -w @smart-money/api && npm run build -w @smart-money/web",
+    "db:generate":"npm run db:generate -w @smart-money/api",
+    "db:push":"npm run db:push -w @smart-money/api",
+    "db:studio":"npm run db:studio -w @smart-money/api"
+  },
+  "devDependencies":{"concurrently":"^9.1.2"},
+  "engines":{"node":">=20"}
+}
