@@ -35,7 +35,7 @@ https://bezad081.github.io/Smart-Money-IR-MVP/
 - Data provider: مسیرهای شناخته‌شده TSETMC
 
 ## مهم: GitHub Pages فقط Frontend را میزبانی می‌کند
-GitHub Pages سرویس استاتیک است و Node API یا PostgreSQL را اجرا نمی‌کند. برای داشبورد زنده، API و دیتابیس باید جداگانه روی VPS یا سرویس backend میزبانی شوند. مقدار `VITE_API_URL` در تنظیمات build باید URL عمومی API باشد (از طریق GitHub Actions Variable/Secret با همین نام). تا قبل از استقرار backend، صفحه وب منتشر می‌شود ولی داده‌های زنده در دسترس نیستند.
+GitHub Pages سرویس استاتیک است و Node API یا PostgreSQL را اجرا نمی‌کند. برای داشبورد زنده، API و دیتابیس باید جداگانه روی VPS یا سرویس backend میزبانی شوند. مقدار `VITE_API_URL` را در Settings → Secrets and variables → Actions → Variables به‌عنوان Repository variable بسازید و URL عمومی API را در آن قرار دهید. در تنظیمات backend نیز `CORS_ORIGIN` باید شامل `https://bezad081.github.io` باشد. تا قبل از استقرار backend، صفحه وب منتشر می‌شود ولی داده‌های زنده در دسترس نیستند.
 
 ## داده و اعتبار
 آداپتر اولیه از مسیرهای CDN مربوط به TSETMC استفاده می‌کند:
